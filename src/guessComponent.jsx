@@ -1,14 +1,68 @@
-import { useContext, useState } from "react";
+import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import { useContext } from "react";
 import { guessContext } from "./guessContext";
+import { styled } from '@mui/material/styles';
 
-export const GuessComponent = (props)=>{
-    const {guess, setGuess} = useContext(guessContext);
-    
+export const GuessComponent = ()=>{
+    const {guess} = useContext(guessContext);
+    const answer = {name: "JoJo no Kimyou na Bouken Part 3: Stardust Crusaders", source:"Manga",
+     episodes:"24", year:"2014", season:"spring",
+     genres:["Action", "Adventure", "Drama", "Supernatural"],
+     studio:["David Production"] 
+}
+
+
     return (
         <>
-        <div>
-            {guess}
-        </div>
+            <Box>
+                
+                <Paper elevation={3}>
+                    { guess ? 
+                   (<Grid container>
+                        <Grid item xs={3} sx={{ my:"auto", p:1 }}>
+                             <Typography align="center" sx={{color: guess.name === answer.name ? 'green' : 'red'}} >{guess.name}</Typography>
+                             <Typography align="center" sx={{ fontSize: 12 }} color="text.secondary">name</Typography>
+                        </Grid>
+                        <Grid item xs={2} sx={{ my:"auto", p:1 }}>
+                           <Typography align="center" sx={{color: guess.source === answer.source ? 'green' : 'red'}}>{guess.source}</Typography> 
+                           <Typography align="center" sx={{ fontSize: 12 }} color="text.secondary">source</Typography>
+                        </Grid>
+                        <Grid item xs={1} sx={{ my:"auto", p:1 }}>
+                            <Typography sx={{color: guess.episodes === answer.episodes ? 'green' : 'red'}}>{guess.episodes}</Typography>
+                            <Typography align="center" sx={{ fontSize: 12 }} color="text.secondary">episodes</Typography>
+                        </Grid>
+                        <Grid item xs={1} sx={{ my:"auto", p:1 }}>
+                            <Box>
+                            <Typography sx={{color: guess.year === answer.year ? 'green' : 'red'}}>{guess.year}</Typography>
+                            <Typography align="center" sx={{ fontSize: 12 }} color="text.secondary">year</Typography>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={1} sx={{ my:"auto", p:1 }}>
+                            <Typography sx={{color: guess.season === answer.season ? 'green' : 'red'}}>{guess.season}</Typography>
+                            <Typography align="center" sx={{ fontSize: 12 }} color="text.secondary">season</Typography>
+                        </Grid>
+                        <Grid item xs={2} sx={{ my:"auto", p:1 }}>
+                            <Stack spacing={1}>
+                                {guess.genres.map((genre)=> <Item sx={{color: answer.genres.includes(genre) ? 'green' : 'red'}}>{genre}</Item>)}
+                                <Typography align="center" sx={{ fontSize: 12 }} color="text.secondary">genres</Typography>
+                            </Stack>
+                        </Grid>
+                        <Grid item xs={2} sx={{ my:"auto", p:1 }}>
+                            <Stack spacing={1}>
+                                {guess.studio.map((std)=> <Item sx={{color: answer.studio.includes(std) ? 'green' : 'red'}}>{std}</Item>)}
+                                <Typography align="center" sx={{ fontSize: 12 }} color="text.secondary">studios</Typography>
+                            </Stack>
+                        </Grid>
+                    </Grid>) : null } 
+                </Paper>
+            </Box>     
         </>
     );
 }
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(0.1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));

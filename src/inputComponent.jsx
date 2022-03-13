@@ -8,23 +8,24 @@ import { SuggestionDropdown } from "./suggestionDropdown";
 
 
 export const InputComponent = (props) =>{
-    const {animes} = useContext(guessContext);
-    const [value, setValue] = useState("");
+    const {animes,search, setSearch} = useContext(guessContext);
+    //const [value, setValue] = useState("");
+    const [show, setShow] = useState(false);
     const handleChange = (event)=>{
         event.preventDefault();
-        setValue(event.target.value);
+        setSearch(event.target.value);
+        if(!event.target.value){
+            setShow(false);
+        }
     }
-    const {getGuess} = props;
-
  return (
         <>
             <Container maxWidth="sm">
                 <Box
-                      sx={{
-                        '& > :not(style)': { m: 2,
-                            width: '100%', maxWidth: 360,
-                         },
-                      }}
+                      sx={{ m: 2,
+                            width: '100%', maxWidth: 360
+                         }
+                      }
                       style={{
                           display: 'flex',
                           flexDirection:"column",
@@ -33,8 +34,8 @@ export const InputComponent = (props) =>{
                       }}
                       noValidate
                        >
-                    <TextField value={value} onChange={(e)=>handleChange(e)} id="outlined-basic" label="Anidle" variant="outlined" name="guess" fullWidth />
-                    <SuggestionDropdown suggestion={value} elements={animes} getGuess={getGuess}/>
+                    <TextField value={search} onChange={(e)=>handleChange(e)} onKeyDown={(e)=>setShow(true)} onBlur={(e)=>setShow(false)} id="outlined-basic" label="Anidle" variant="outlined" name="guess" fullWidth />
+                    <SuggestionDropdown suggestion={search} elements={animes} show={show} />
                 </Box>
             </Container>
         </>

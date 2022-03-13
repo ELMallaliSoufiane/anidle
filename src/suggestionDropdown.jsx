@@ -11,47 +11,50 @@ import { FixedSizeList } from 'react-window';
 
 function RenderRow(props) {
     const { data,index, style } = props;
-    const {setGuess, animes,setAnimes} = useContext(guessContext);
+    const {setGuess,setAnimes,animes, setSearch} = useContext(guessContext);
 
     const handleClick = (e,data)=>{
         //console.log(data);
-        setGuess(data);
-        setAnimes(animes=>animes.filter(anime => anime !== data));
+        setGuess(animes.find(anime =>  anime.name === data.name));
+        setAnimes(animes=>animes.filter(anime => anime.name !== data.name));
+        setSearch('');
     }
 
     
  return (
-    <ListItem style={style} key={index} onClick={(e)=>handleClick(e,data[index])} component="div" disablePadding>
+    <ListItem style={style} key={index} onMouseDown={(e)=>handleClick(e,data[index])} component="div" disablePadding>
       <ListItemButton >
-        <ListItemText primary={`${data[index]}`} />
+        <ListItemText primary={`${data[index].name}`} />
       </ListItemButton>
     </ListItem>
   );
 }
 
-export const SuggestionDropdown = ({suggestion, elements})=>{
+export const SuggestionDropdown = ({suggestion, elements, show})=>{
     let filtered=[];
     if(!suggestion){
          filtered = [...elements];
     }
     else{
-         filtered = elements.filter(element => (element.toLowerCase()).includes(suggestion.toLowerCase()));
+         filtered = elements.filter(element => (element.name.toLowerCase()).includes(suggestion.toLowerCase()) || (element.alternative.toLowerCase()).includes(suggestion.toLowerCase()));
     } 
     return (
-        <Box
-          sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
+      <>
+      {show ? <Box
+        sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
+      >
+        <FixedSizeList
+          itemData={filtered}
+          height={400}
+          width={360}
+          itemSize={46}
+          itemCount={filtered.length}
+          overscanCount={5}
         >
-          <FixedSizeList
-            itemData={filtered}
-            height={400}
-            width={360}
-            itemSize={46}
-            itemCount={filtered.length}
-            overscanCount={5}
-          >
-            {RenderRow}
-          </FixedSizeList>
-        </Box>
+          {RenderRow}
+        </FixedSizeList>
+      </Box> : null }
+      </>
       );
 
 }
