@@ -14,6 +14,7 @@ export const InputComponent = (props) =>{
     const handleChange = (event)=>{
         event.preventDefault();
         setSearch(event.target.value);
+        console.log(event.target.value)
         if(!event.target.value){
             setShow(false);
         }

@@ -3,18 +3,11 @@ import { useContext } from "react";
 import { guessContext } from "./guessContext";
 import { styled } from '@mui/material/styles';
 
-export const GuessComponent = ()=>{
-    const {guess} = useContext(guessContext);
-    const answer = {name: "JoJo no Kimyou na Bouken Part 3: Stardust Crusaders", source:"Manga",
-     episodes:"24", year:"2014", season:"spring",
-     genres:["Action", "Adventure", "Drama", "Supernatural"],
-     studio:["David Production"] 
-}
-
-
+export const GuessComponent = ({guess})=>{
+    const {answer} = useContext(guessContext);
     return (
         <>
-            <Box>
+            <Box sx={{maxHeight:'300px'}}>
                 
                 <Paper elevation={3}>
                     { guess ? 
@@ -43,13 +36,13 @@ export const GuessComponent = ()=>{
                         </Grid>
                         <Grid item xs={2} sx={{ my:"auto", p:1 }}>
                             <Stack spacing={1}>
-                                {guess.genres.map((genre)=> <Item sx={{color: answer.genres.includes(genre) ? 'green' : 'red'}}>{genre}</Item>)}
+                                {guess.genres.map((genre,index)=> <Item key={index} sx={{color: answer.genres.includes(genre) ? 'green' : 'red'}}>{genre}</Item>)}
                                 <Typography align="center" sx={{ fontSize: 12 }} color="text.secondary">genres</Typography>
                             </Stack>
                         </Grid>
                         <Grid item xs={2} sx={{ my:"auto", p:1 }}>
                             <Stack spacing={1}>
-                                {guess.studio.map((std)=> <Item sx={{color: answer.studio.includes(std) ? 'green' : 'red'}}>{std}</Item>)}
+                                {guess.studio.map((std,index)=> <Item key={index} sx={{color: answer.studio.includes(std) ? 'green' : 'red'}}>{std}</Item>)}
                                 <Typography align="center" sx={{ fontSize: 12 }} color="text.secondary">studios</Typography>
                             </Stack>
                         </Grid>
