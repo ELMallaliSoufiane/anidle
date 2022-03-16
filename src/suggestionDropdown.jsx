@@ -11,15 +11,15 @@ import { FixedSizeList } from 'react-window';
 
 function RenderRow(props) {
     const { data,index, style } = props;
-    const {setGuess,setAnimes,animes, setSearch, setWin,answer} = useContext(guessContext);
+    const {setGuess,setAnimes,animes, setSearch, setGameState, gameState} = useContext(guessContext);
 
     const handleClick = (e,data)=>{
         //console.log(data);
         const guess = animes.find(anime =>  anime.name === data.name);
         setGuess(guess);
-        if(JSON.stringify(guess) === JSON.stringify(answer)) {
+        if(JSON.stringify(guess) === JSON.stringify(gameState.answer)) {
           console.log("win");
-          setWin(true);
+          setGameState(gameState => ({...gameState, end:true, win:true}));
         }
         setAnimes(animes=>animes.filter(anime => anime.name !== data.name));
         setSearch('');
@@ -47,7 +47,7 @@ export const SuggestionDropdown = ({suggestion, elements, show})=>{
     return (
       <>
       {show ? <Box
-        sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
+        sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: '#242424' }}
       >
         <FixedSizeList
           itemData={filtered}

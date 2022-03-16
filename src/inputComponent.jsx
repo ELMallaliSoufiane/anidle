@@ -7,8 +7,8 @@ import { SuggestionDropdown } from "./suggestionDropdown";
  
 
 
-export const InputComponent = (props) =>{
-    const {animes,search, setSearch} = useContext(guessContext);
+export const InputComponent = () =>{
+    const {animes,search,setSearch,gameState} = useContext(guessContext);
     //const [value, setValue] = useState("");
     const [show, setShow] = useState(false);
     const handleChange = (event)=>{
@@ -35,8 +35,8 @@ export const InputComponent = (props) =>{
                       }}
                       noValidate
                        >
-                    <TextField value={search} onChange={(e)=>handleChange(e)} onKeyDown={(e)=>setShow(true)} onBlur={(e)=>setShow(false)} id="outlined-basic" label="Anidle" variant="outlined" name="guess" fullWidth />
-                    <SuggestionDropdown suggestion={search} elements={animes} show={show} />
+                    <TextField disabled={gameState.end} value={search} onChange={(e)=>handleChange(e)} onKeyDown={(e)=>setShow(true)} onBlur={(e)=>setShow(false)} id="outlined-basic" label="Anidle" variant="outlined" name="guess" fullWidth />
+                    {animes && <SuggestionDropdown suggestion={search} elements={animes} show={gameState.end? false : show} />}
                 </Box>
             </Container>
         </>

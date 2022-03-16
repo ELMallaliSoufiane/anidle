@@ -5,63 +5,74 @@ import { GuessComponent } from './guessComponent'
 import {guessContext} from './guessContext';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import { PostGameDialog } from './postgameDialog';
+import { AppBar, Toolbar, Typography } from '@mui/material';
+import {fetchAnimes} from './api';
 
 function App() {
   const [guess, setGuess] = useState('');
   const [guesses, setGuesses] = useState([]);
   const [animes, setAnimes] = useState([]);
   const [search, setSearch] = useState('');
-  const [win, setWin] = useState(false);
-  const [answer, setAnswer] = useState(
-  {name: "JoJo no Kimyou na Bouken Part 3: Stardust Crusaders",alternative: "JoJo's Bizarre Adventure: Stardust Crusaders", source:"Manga",
-  episodes:"24", year:"2014", season:"spring",
-  genres:["Action", "Adventure", "Drama", "Supernatural"],
-  studio:["David Production"]})
-  const providerValue = useMemo(()=>({guess,setGuess,animes,setAnimes,search, setSearch, setWin, answer}),[answer,guess,setGuess,animes,setAnimes,search, setSearch, setWin]);
-  const getGuess = (guess)=>{
-    setGuess(guess);
-    
-}
+  const [gameState, setGameState] = useState({answer: {},end:false, win:false, tries:0});
+  const providerValue = useMemo(()=>({guess,setGuess,animes,setAnimes,search, setSearch ,gameState,setGameState}),[guess,setGuess,animes,setAnimes,search, setSearch,gameState,setGameState]);
+
+useEffect(()=>{
+  const fetch = async () =>{
+    const [animestmp, anime] =  await fetchAnimes();
+    setAnimes(animestmp);
+    setGameState(gameState => ({...gameState, answer:anime}));
+  }
+
+  
+  // setAnimes(animestmp);
+  // setAnswer(anime);
+
+ fetch();
+},[]);
 
 
 useEffect(()=>{
 
-  if(guess && !guesses.includes(guess)) setGuesses(guesses => [...guesses,guess]);
-  
- 
-    const fetchAnimes = async () =>{
-      const data = await fetch('answers.txt');
-      const lines = await data.text();
-      let animestmp = [];
-      (lines.split('\n')).forEach(line=>{
-        const animeline =  line.split(';');
-        const anime = { name : animeline[0], alternative : animeline[1], source: animeline[2], episodes: animeline[3],
-               year: animeline[4], season: animeline[5], genres: JSON.parse(animeline[6]),studio: JSON.parse(animeline[7]) };
-               animestmp.push(anime);
-      });
-      setAnimes(animestmp);
-    }
-if(animes.length===0) fetchAnimes();
+if(guess && !guesses.includes(guess)){
+    setGuesses(guesses => [...guesses,guess]);
+    setGameState(gameState => ({...gameState, tries: gameState.tries+1}))
+}
+
   
 },[guess,guesses])
 
 
 
-
+console.log(gameState);
   return (
-      <Box sx={{height:'100vh'}}>
-        <Grid container sx={{height:'100%'}}>
+    <>
+    <Box sx={{ height:'10%' }}>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography align='center' variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Anidle
+              </Typography>
+            </Toolbar>
+          </AppBar>
+    </Box>
+
+  {gameState.answer && <Box sx={{height:'90%'}}>
+        <Grid container sx={{height:1}} >
         <guessContext.Provider value={providerValue}>
-          <Grid item sm={6} xs={12}>
-              <InputComponent getGuess={getGuess} />
+          <Grid item sm={6} xs={12} sx={{ p:1 }}>
+              <InputComponent />
           </Grid>
-          <Grid item xs={12} sm={6} sx={{ my:"auto", p:1 }}>
-           {guesses.slice().reverse().map((gs,index)=><GuessComponent key={index} guess={gs} sx={{m:1}} />)}  
+          <Grid item xs={12} sm={6} sx={{ p:1 }}>
+           {guesses.slice().reverse().map((gs,index)=><GuessComponent key={index} guess={gs}  />)}  
           </Grid>
           </guessContext.Provider>
         </Grid>
-      </Box>
+    </Box> } 
+    {(gameState.end || gameState.tries === 12) && <PostGameDialog state={gameState}></PostGameDialog>}
+      </>
   );
 }
 
 export default App;
+
