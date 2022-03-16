@@ -1,13 +1,13 @@
 import './App.css';
 import { useState,useEffect, useMemo } from "react";
-import { InputComponent } from './inputComponent';
-import { GuessComponent } from './guessComponent'
-import {guessContext} from './guessContext';
+import { InputComponent } from './components/inputComponent';
+import { GuessComponent } from './components/guessComponent'
+import {guessContext} from './components/guessContext';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { PostGameDialog } from './postgameDialog';
+import { PostGameDialog } from './components/postgameDialog';
 import { AppBar, Toolbar, Typography } from '@mui/material';
-import {fetchAnimes} from './api';
+import {fetchAnimes} from './api/api';
 
 function App() {
   const [guess, setGuess] = useState('');
