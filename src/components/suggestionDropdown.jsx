@@ -11,7 +11,7 @@ import { FixedSizeList } from 'react-window';
 
 function RenderRow(props) {
     const { data,index, style } = props;
-    const {setGuess,setAnimes,animes, setSearch, setGameState, gameState} = useContext(guessContext);
+    const {setGuess,animes, setSearch, setGameState, gameState} = useContext(guessContext);
 
     const handleClick = (e,data)=>{
         //console.log(data);
@@ -21,7 +21,6 @@ function RenderRow(props) {
           console.log("win");
           setGameState(gameState => ({...gameState, end:true, win:true}));
         }
-        setAnimes(animes=>animes.filter(anime => anime.name !== data.name));
         setSearch('');
     }
 

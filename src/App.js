@@ -7,44 +7,42 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { PostGameDialog } from './components/postgameDialog';
 import { AppBar, Toolbar, Typography } from '@mui/material';
-import {fetchAnimes} from './api/api';
+import {fetchAnimes,getGameState} from './api/api';
 
 function App() {
   const [guess, setGuess] = useState('');
-  const [guesses, setGuesses] = useState([]);
   const [animes, setAnimes] = useState([]);
   const [search, setSearch] = useState('');
-  const [gameState, setGameState] = useState({answer: {},end:false, win:false, tries:0});
-  const providerValue = useMemo(()=>({guess,setGuess,animes,setAnimes,search, setSearch ,gameState,setGameState}),[guess,setGuess,animes,setAnimes,search, setSearch,gameState,setGameState]);
+  // const [gameState, setGameState] = useState({guesses:[],answer: {},end:false, win:false, tries:0});
+  const [gameState, setGameState] = useState(()=>getGameState());
+  const providerValue = useMemo(()=>({guess,setGuess,animes,search, setSearch ,gameState,setGameState}),[guess,setGuess,animes,search, setSearch,gameState,setGameState]);
 
 useEffect(()=>{
+  
   const fetch = async () =>{
     const [animestmp, anime] =  await fetchAnimes();
-    setAnimes(animestmp);
-    setGameState(gameState => ({...gameState, answer:anime}));
+     setAnimes(animestmp);
+    if(JSON.stringify(gameState.answer) === '{}') setGameState(gameState => ({...gameState, answer:anime}));
   }
 
-  
-  // setAnimes(animestmp);
-  // setAnswer(anime);
-
  fetch();
+
 },[]);
 
 
 useEffect(()=>{
 
-if(guess && !guesses.includes(guess)){
-    setGuesses(guesses => [...guesses,guess]);
-    setGameState(gameState => ({...gameState, tries: gameState.tries+1}))
+if(guess){
+    setGameState(gameState => ({...gameState,guesses: [...gameState.guesses, guess], tries: gameState.tries+1, lastPlayed: new Date()}));
+    setGuess('');  
 }
-
-  
-},[guess,guesses])
+localStorage.setItem("gameState", JSON.stringify(gameState));
 
 
+},[guess,gameState])
 
-console.log(gameState);
+
+
   return (
     <>
     <Box sx={{ height:'10%' }}>
@@ -64,7 +62,7 @@ console.log(gameState);
               <InputComponent />
           </Grid>
           <Grid item xs={12} sm={6} sx={{ p:1 }}>
-           {guesses.slice().reverse().map((gs,index)=><GuessComponent key={index} guess={gs}  />)}  
+           {gameState.guesses.slice().reverse().map((gs,index)=><GuessComponent key={index} guess={gs}  />)}  
           </Grid>
           </guessContext.Provider>
         </Grid>

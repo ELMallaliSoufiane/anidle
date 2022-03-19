@@ -9,6 +9,7 @@ const theme = createTheme({
     mode: 'dark',
   }
 });
+
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>

@@ -12,7 +12,21 @@ export const fetchAnimes = async () =>{
              animestmp.push(anime);
              if(index === lucky) answer = anime;
     });
-    console.log(answer);
     return [animestmp,answer];
   }
-  
+ 
+  export const getGameState = ()=>{
+    const today = new Date();
+    today.setHours(0,0,0);
+    console.log(today);
+    const tomorrow = new Date (today);
+    tomorrow.setDate(tomorrow.getDate()+1);
+    tomorrow.setHours(0,0,0);
+    const gameState = JSON.parse(localStorage.getItem("gameState"));
+    console.log(Date.parse(gameState.lastPlayed));
+
+    if(gameState && gameState.lastPlayed && Date.parse(gameState.lastPlayed) < tomorrow.getTime() && Date.parse(gameState.lastPlayed) > today.getTime()){
+             return gameState;
+    }
+    return {guesses:[],answer: {},end:false, win:false, tries:0};
+  }
